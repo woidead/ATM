@@ -17,7 +17,7 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS clients(
                client_id SERIAL PRIMARY KEY,
                firstname VARCHAR(50),
-               lasttname VARCHAR(50),
+               lastname VARCHAR(50),
                middlename VARCHAR(50),
                account_number BIGINT UNIQUE
 );
@@ -41,7 +41,7 @@ def create_account():
         middlename = input('Введите отчество: ')
         account_number = 11800000000 + randint(0, 99999999)
 
-        cursor.execute(f"""INSERT INTO clients (firstname, lasttname, middlename, account_number) VALUES ('{firstname}', '{lastname}', '{middlename}', {account_number})
+        cursor.execute(f"""INSERT INTO clients (firstname, lastname, middlename, account_number) VALUES ('{firstname}', '{lastname}', '{middlename}', {account_number})
                     """)
         conn.commit()
         print(f"Счет создан. Номер счета: {account_number}")
