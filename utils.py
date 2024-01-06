@@ -41,7 +41,7 @@ def create_account():
         middlename = input('Введите отчество: ')
         account_number = 11800000000 + randint(0, 99999999)
 
-        cursor.execute(f"""INSERT INTO clients (firstname, lasttname, middlename, account_number) VALUES ({firstname}, {lastname}, {middlename}, {account_number})
+        cursor.execute(f"""INSERT INTO clients (firstname, lasttname, middlename, account_number) VALUES ('{firstname}', '{lastname}', '{middlename}', {account_number})
                     """)
         conn.commit()
         print(f"Счет создан. Номер счета: {account_number}")
@@ -62,8 +62,37 @@ def deposit():
 
 def check_balance(amount, account_number):
     cursor.execute(f"SELECT sum(amount) FROM transactions WHERE account_number = {account_number}")
-    balance = cursor.fetchall()[0]
+    balance = cursor.fetchall()[0][0]
     return balance >= amount
 
 
+def withdraw():
+    account_number = int(input(f'Введите номер счета: '))
+    amount = float(input("Введите сумму пополнения: "))
+    if check_balance(amount, account_number):
+        cursor.execute(f"""INSERT INTO transactions (account_number, amount, type)
+                    VALUES ({account_number}, {-amount}, 'deposit')""")
+        conn.commit()
+    else:
+        print("Не достаточно денег на балансе")
 
+def transfer():
+    from_acc = int(input(f'Введите номер вашего счета: '))
+    to_acc = int(input(f'Введите номер счета получателя: '))
+    amount = float(input("Введите сумму пополнения: "))
+
+    if check_balance(amount, from_acc):
+        cursor.execute(f"""INSERT INTO transactions (account_number, amount, type)
+                    VALUES ({from_acc}, {-amount}, 'transfer out')""")
+        cursor.execute(f"""INSERT INTO transactions (account_number, amount, type)
+                    VALUES ({to_acc}, {amount}, 'transfer in')""")
+        conn.commit()
+        print("Перевод выполнен")
+    else:
+        print("Не достаточно денег на балансе")
+
+def balance():
+    account_number = int(input(f'Введите номер счета: '))
+    cursor.execute(f"SELECT sum(amount) FROM transactions WHERE account_number = {account_number}")
+    balance = cursor.fetchall()[0][0]
+    print(balance)
