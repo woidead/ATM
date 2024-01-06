@@ -65,11 +65,5 @@ def check_balance(amount, account_number):
     balance = cursor.fetchall()[0]
     return balance >= amount
 
-def withdraw():
-    account_number = int(input(f'Введите номер счета: '))
-    amount = float(input("Введите сумму пополнения: "))
-    cursor.execute(f"""INSERT INTO transactions (account_number, amount, type)
-                VALUES ({account_number}, {amount}, 'deposit')""")
-    conn.commit()
 
 
